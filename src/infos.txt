@@ -1,0 +1,8 @@
+Why Vite with React instead of Create-React-App?
+almost drop-in replacement for create-react-app (CRA)
+still SPA/CSR friendly, but SSR is opt-in
+no framework/company lock-in
+lightweight
+does not mingle with React on a feature level
+therefore focus on React itself and not a framework
+
