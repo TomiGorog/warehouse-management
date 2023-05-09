@@ -8,5 +8,12 @@ export interface IPackage {
 }
 
 export type PackageContextType = {
-    packages: IPackage[]
+    packagesByCategory: packageCatType | undefined
+}
+
+export type packageCatType = {
+    mensClothing: IPackage[],
+    womensClothing: IPackage[],
+    jewelery: IPackage[],
+    electronics: IPackage[],
 }
