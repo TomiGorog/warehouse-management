@@ -4,13 +4,18 @@ export interface IPackage {
     price: number,
     category: string,
     description: string,
-    image: string
+    image: string,
+    rating: {
+        count: number,
+        rate: number
+    }
 }
 
 export type PackageContextType = {
     packagesWithoutCategory: IPackage[],
     // packagesByCategory: packageCatType 
-    randomWarehouseInitialization : () => Promise<void>
+    warehouses: WarehouseType[],
+    randomWarehouseInitialization: () => Promise<void>
 }
 
 export type packageCatType = {
@@ -20,3 +25,17 @@ export type packageCatType = {
     electronics: IPackage[],
 }
 
+export type WarehouseType = {
+    packageId: {
+        id: number,
+        title: string,
+        price: number,
+        category: string,
+        description: string,
+        image: string,
+        rating: {
+            count: number,
+            rate: number
+        }
+    }
+}

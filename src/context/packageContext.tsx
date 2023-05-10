@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
-import { fetchPackages, setupRandomWarehouses } from "../services/fetchService";
-import { IPackage, PackageContextType } from "../types";
+import { fetchPackages, fetchWarehouses, setupRandomWarehouses } from "../services/fetchService";
+import { IPackage, PackageContextType, WarehouseType } from "../types";
 
 
 
@@ -9,16 +9,22 @@ interface IElement { children: JSX.Element | JSX.Element[] }
 
 const PackageProvider = ({ children }: IElement) => {
 
-    const [packagesWithoutCategory, setPackagesWithoutCategory] = useState<IPackage[]>([{
-        id: 0,
-        title: 'default package',
-        price: 0,
-        category: 'none',
-        description: 'default package description',
-        image: 'default image'
-    }])
+    const [packagesWithoutCategory, setPackagesWithoutCategory] = useState<IPackage[]>([
+    //     {
+    //     id: 0,
+    //     title: 'default package',
+    //     price: 0,
+    //     category: 'none',
+    //     description: 'default package description',
+    //     image: 'default image',
+    //     rating: {
+    //         count: 1,
+    //         rate: 0
+    //     }
+    // }
+])
 
-    const [warehouses, setWarehouses] = useState([])
+    const [warehouses, setWarehouses] = useState<WarehouseType[]>([])
     // currently unused
     // const [packagesByCategory, setPackagesByCategory] = useState<packageCatType>({
     //     mensClothing: [],
@@ -28,18 +34,10 @@ const PackageProvider = ({ children }: IElement) => {
     // })
 
     useEffect(() => {
-        fetchWarehouses()
-
+        fetchWarehouses(setWarehouses) 
     }, []);
 
 
-    const fetchWarehouses = async () => {
-        fetch(`${import.meta.env.VITE_DATABASEURL}/warehouses.json`)
-            .then(resp => resp.json())
-            .then(data => {
-                setWarehouses(data)
-            })
-    }
 
     const randomWarehouseInitialization = async () => {
         const packages = await fetchPackages();
@@ -50,7 +48,7 @@ const PackageProvider = ({ children }: IElement) => {
     }
 
     return (
-        <PackageContext.Provider value={{ packagesWithoutCategory, randomWarehouseInitialization }}>
+        <PackageContext.Provider value={{ packagesWithoutCategory, warehouses, randomWarehouseInitialization }}>
             {children}
         </PackageContext.Provider>
     );
