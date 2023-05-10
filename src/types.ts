@@ -10,11 +10,28 @@ export interface IPackage {
         rate: number
     }
 }
+export type WarehouseProps = {
+    [warehouseName: string]: {
+        name: string,
+        maxCapacity: number,
+        currentCapacity: number,
+        state: 'open' | 'close' | 'full' | 'empty',
+        packages: IPackage[]
+    }
+}
+
+export type NoTitleWHProps = {
+    name: string,
+    maxCapacity: number,
+    currentCapacity: number,
+    state: 'open' | 'close' | 'full' | 'empty',
+    packages: IPackage[]
+}
 
 export type PackageContextType = {
     packagesWithoutCategory: IPackage[],
     // packagesByCategory: packageCatType 
-    warehouses: WarehouseType[],
+    warehouses: WarehouseProps
     randomWarehouseInitialization: () => Promise<void>
 }
 
@@ -23,19 +40,4 @@ export type packageCatType = {
     womensClothing: IPackage[],
     jewelery: IPackage[],
     electronics: IPackage[],
-}
-
-export type WarehouseType = {
-    packageId: {
-        id: number,
-        title: string,
-        price: number,
-        category: string,
-        description: string,
-        image: string,
-        rating: {
-            count: number,
-            rate: number
-        }
-    }
 }

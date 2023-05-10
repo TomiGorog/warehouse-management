@@ -1,53 +1,17 @@
-import { IPackage, WarehouseType } from "../types";
+import { IPackage, WarehouseProps,  } from "../types";
 
 export const fetchPackages = () => {
     return fetch('https://fakestoreapi.com/products')
         .then(res => res.json())
 }
 
-export const fetchWarehouses = async (setter: React.Dispatch<React.SetStateAction<WarehouseType[]>>) => {
+export const fetchWarehouses = async (setter: React.Dispatch<React.SetStateAction<WarehouseProps>> ) => {
     fetch(`${import.meta.env.VITE_DATABASEURL}/warehouses.json`)
         .then(resp => resp.json())
         .then(data => {
             setter(data)
         })
 }
-//currently unused function
-// export const fetchDataByCategories = async () => {
-//     try {
-//         const packages = await fetchPackages();
-//         console.log(packages, "Fetching packages ready?")
-//         const mensClothing: IPackage[] = [];
-//         const womensClothing: IPackage[] = [];
-//         const jewelery: IPackage[] = [];
-//         const electronics: IPackage[] = [];
-
-//         packages.forEach((onePackage: IPackage) => {
-//             if (onePackage.category === "men's clothing") {
-//                 mensClothing.push(onePackage);
-//             } else if (onePackage.category === "women's clothing") {
-//                 womensClothing.push(onePackage);
-//             } else if (onePackage.category === "jewelery") {
-//                 jewelery.push(onePackage);
-//             } else if (onePackage.category === "electronics") {
-//                 electronics.push(onePackage);
-//             }
-//         });
-
-//         const packWithCat: packageCatType = {
-//             mensClothing: mensClothing,
-//             womensClothing: womensClothing,
-//             jewelery: jewelery,
-//             electronics: electronics,
-//         };
-//         return packWithCat
-
-//     } catch (error) {
-//         console.error("Error fetching packages:", error);
-//     }
-// };
-
-
 
 export const setupRandomWarehouses = (objectsArray: IPackage[]) => {
 
@@ -108,46 +72,48 @@ export const postPackagesToWarehouses = (toWarehouse1: IPackage[], toWarehouse2:
         }
         )
     }
-    
+
 }
 
 export const addMandatoryWarehouseData = () => {
-    const warehouseNamesArray: string[] = []
-    const warehouseLengthsArray: number[] = []
 
+    const warehouseData = {
+        name: '',
+        maxCapacity: 15,
+        currentCapacity: 0,
+        state: 'empty'
+    }
     fetch(`${import.meta.env.VITE_DATABASEURL}/warehouses.json`)
         .then(resp => resp.json())
         .then(data => {
-            console.log(data)
-            Object.keys(data).forEach((warehouse: any) => {
-                console.log(warehouse, data[warehouse])
+            Object.keys(data).forEach((warehouse: string) => {
                 const arrayOfObjects = Object.keys(data[warehouse].packages).map(key => data[warehouse].packages[key]);
-                console.log(arrayOfObjects)
-                warehouseNamesArray.push(warehouse)
-                warehouseLengthsArray.push(arrayOfObjects.length)
-
+                warehouseData.name = warehouse
+                warehouseData.currentCapacity = arrayOfObjects.length
+                if (warehouseData.currentCapacity === 0) {
+                    warehouseData.state = 'empty'
+                } else if (warehouseData.currentCapacity === warehouseData.maxCapacity) {
+                    warehouseData.state = 'full'
+                } else if (warehouseData.currentCapacity < warehouseData.maxCapacity && warehouseData.currentCapacity > 0) {
+                    warehouseData.state = 'open'
+                }
+                fetch(`${import.meta.env.VITE_DATABASEURL}/warehouses/${warehouse}.json`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(warehouseData)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to upload objects.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
             })
-            
-        
+
         })
-        console.log(warehouseNamesArray, warehouseLengthsArray)
-    // const pack = {
-    //     name: 'warehouse1',
-    //     maxCapacity: 15
-    // }
-    // fetch(`${import.meta.env.VITE_DATABASEURL}/warehouses/warehouse1.json`, {
-    //     method: 'PATCH',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(pack)
-    // })
-    //     .then(response => {
-    //         if (!response.ok) {
-    //             throw new Error('Failed to upload objects.');
-    //         }
-    //     })
-    //     .catch(error => {
-    //         console.error('Error:', error);
-    //     });
+
 }

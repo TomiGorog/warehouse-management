@@ -1,18 +1,13 @@
+import { NoTitleWHProps, WarehouseProps } from "../types"
 
-type warehouseProps = {
-  name: string,
-    maxCapacity: number,
-    currentCapacity: number,
-    warehouseState: 'open' | 'close' | 'full' | 'empty',
 
-}
-const WarehouseComponent = ({name, maxCapacity, currentCapacity, warehouseState}: warehouseProps) => {
+const WarehouseComponent: React.FC<NoTitleWHProps> = ( {name, maxCapacity, currentCapacity, state, packages}: NoTitleWHProps) => {
   return (
     <div>
       <h2>Name: {name}</h2>
       <p>Maximum capacity: {maxCapacity}</p>
       <p>Currenct capacity: {currentCapacity}</p>
-      <p>Warehouse state: {warehouseState}</p>
+      <p>Warehouse state: {state}</p>
     </div>
   )
 }
