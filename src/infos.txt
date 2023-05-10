@@ -1,3 +1,23 @@
+Szimuláld egy raktár működését az alábbi paraméterekkel:
+- Tudjon kezelni több raktárat (de legalább kettőt).
+- Legyen egy főoldal, ahol gráfokkal megjeleníted a raktárak telítettségét és forgalmát (kiküldött és beérkező csomagok).
+- Egy raktár megtekintésekor lássuk a telítettségét, a tárolt csomagokat és egy listát a csomagok változásairól időrendi sorrendben. (Pl. új csomag jött, egy meglévő lett máshova irányítva, stb.)
+- Lehessen raktárat ideiglenesen és végérvényesen lezárni. Ilyenkor a csomagokat máshova kell irányítani, és a raktárat is ki kell üríteni. (Amennyiben nincs elég hely más raktárakban, nem lehet lezárni.)
+- Az oldalon legyen egy gomb amivel random mennyiségű terméket küldesz a raktárakba.
+- Az oldal mobilbarát, reszponzív megjelenésű legyen.
+- Legyen nyelvesített (legalább hu, en).
+Egy raktár paraméterei legalább ezek legyenek:
+- maximum kapacitás;
+- jelenlegi kapacitás;
+- státusz [nyitva, zárva, tele, üres].
+Ezeken felül tetszés szerint bővítheted ahogy jónak ítéled.
+A csomagok lekéréséhez használd a Fake Store API-t (https://fakestoreapi.com/).
+Plusz pontokat jelent:
+- ha a rendszered képes felhasználó(ka)t kezelni, be- és kijelentkezni;
+- ha a lekért adatokat adatbázisban tárolod;
+- ha megoldod hogy bizonyos csomagok random időközönként kikerüljenek a raktárból;
+Ehhez a feladathoz szerver oldali kódot is írhatsz, ez esetben a NodeJS-t támogatjuk.
+
 Why Vite with React instead of Create-React-App?
 almost drop-in replacement for create-react-app (CRA)
 still SPA/CSR friendly, but SSR is opt-in

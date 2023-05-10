@@ -9,7 +9,7 @@ export interface IPackage {
 
 export type PackageContextType = {
     packagesWithoutCategory: IPackage[],
-    packagesByCategory: packageCatType 
+    // packagesByCategory: packageCatType 
     randomWarehouseInitialization : () => Promise<void>
 }
 
