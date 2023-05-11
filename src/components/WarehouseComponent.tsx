@@ -21,7 +21,6 @@ const WarehouseComponent: React.FC<NoTitleWHProps> = ( {name, maxCapacity, curre
           state,
           packages
         }
-        console.log(whInfo)
         closeWarehouse(whInfo, warehouses)
       }} >Close warehouse</button>
     </div>

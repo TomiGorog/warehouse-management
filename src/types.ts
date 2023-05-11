@@ -35,9 +35,4 @@ export type PackageContextType = {
     randomWarehouseInitialization: () => Promise<void>
 }
 
-export type packageCatType = {
-    mensClothing: IPackage[],
-    womensClothing: IPackage[],
-    jewelery: IPackage[],
-    electronics: IPackage[],
-}
+

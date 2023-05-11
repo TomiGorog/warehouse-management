@@ -14,7 +14,9 @@ const AllWarehousesComponent: React.FC = () => {
       [key]: value,
     };
     warehousesArray.push(warehouse);
+
   });
+  console.log(warehousesArray)
 
 
   return (
