@@ -15,7 +15,7 @@ export type WarehouseProps = {
         name: string,
         maxCapacity: number,
         currentCapacity: number,
-        state: 'open' | 'close' | 'full' | 'empty',
+        state: 'open' | 'closed' | 'full' | 'empty',
         packages: IPackage[]
     }
 }
@@ -24,7 +24,7 @@ export type NoTitleWHProps = {
     name: string,
     maxCapacity: number,
     currentCapacity: number,
-    state: 'open' | 'close' | 'full' | 'empty',
+    state: 'open' | 'closed' | 'full' | 'empty',
     packages: IPackage[]
 }
 

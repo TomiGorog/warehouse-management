@@ -4,7 +4,7 @@ import { IPackage, PackageContextType, WarehouseProps,  } from "../types";
 
 
 
-export const PackageContext = createContext<PackageContextType | null>(null)
+export const PackageContext = createContext({} as PackageContextType)
 interface IElement { children: JSX.Element | JSX.Element[] }
 
 const PackageProvider = ({ children }: IElement) => {

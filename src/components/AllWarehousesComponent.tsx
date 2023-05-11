@@ -9,7 +9,7 @@ const AllWarehousesComponent: React.FC = () => {
   const context = useContext(PackageContext)
   const warehousesArray: WarehouseProps[] = [];
 
-  Object.entries(context!.warehouses).forEach(([key, value]) => {
+  context && context.warehouses && Object.entries(context!.warehouses).forEach(([key, value]) => {
     const warehouse = {
       [key]: value,
     };
