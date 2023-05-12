@@ -10,7 +10,7 @@ export interface IPackage {
         rate: number
     }
 }
-export type WarehouseProps = {
+export type WarehousePropsWKey = {
     [warehouseName: string]: {
         name: string,
         maxCapacity: number,
@@ -31,8 +31,13 @@ export type NoTitleWHProps = {
 export type PackageContextType = {
     packagesWithoutCategory: IPackage[],
     // packagesByCategory: packageCatType 
-    warehouses: WarehouseProps
+    warehouses: WarehousePropsWKey,
     randomWarehouseInitialization: () => Promise<void>
 }
 
-
+//class whlist, constructorba wh listaja, nekik megvan az állapota, 
+// listaként végigmenni a whneveken  arrayhez plusz functionok, 
+// addpackages , currentCapacity van elegendő összesen, amugy iteralni warehouselistan, ha 1 wh closed/full akkor  continueval tovabb
+// open v empty eseten h a maxből current h megadja a maradék capacityt, megnézzök h a maradék cap kisebb v nagyobb mint a packagek száma, ha kisebb akkor jó és lefoglalok x csomagot, oda berakom és
+// kilépek a ciklusból breakkel , inkább for ciklussal , ha nem férünk be van acsomaglista, azt copy változóba, azt a ciklus közben updateled, kapacitás mennyiséget slicenal átpakolod a wh,be fullra teszted
+// kint lévő package listát is frissítjük , mivel a wh tele , megy a következőre

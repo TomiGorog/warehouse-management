@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { fetchPackages, fetchWarehouses, setupRandomWarehouses } from "../services/fetchService";
-import { IPackage, PackageContextType, WarehouseProps,  } from "../types";
+import { IPackage, NoTitleWHProps, PackageContextType, WarehousePropsWKey, } from "../types";
 
 
 
@@ -9,7 +9,7 @@ interface IElement { children: JSX.Element | JSX.Element[] }
 
 const PackageProvider = ({ children }: IElement) => {
 
-    const [packagesWithoutCategory, setPackagesWithoutCategory] = useState<IPackage[]>([
+  const [packagesWithoutCategory, setPackagesWithoutCategory] = useState<IPackage[]>([
     //     {
     //     id: 0,
     //     title: 'default package',
@@ -22,8 +22,8 @@ const PackageProvider = ({ children }: IElement) => {
     //         rate: 0
     //     }
     // }
-])
-const exampleObject: WarehouseProps = {
+  ])
+  const exampleObject: WarehousePropsWKey = {
     warehouseName: {
       name: 'Example Warehouse',
       maxCapacity: 100,
@@ -57,33 +57,43 @@ const exampleObject: WarehouseProps = {
           },
         },
       ],
-    },
-  };
-    const [warehouses, setWarehouses] = useState<WarehouseProps>(
-      exampleObject
-    )
-    
-
-    useEffect(() => {
-        fetchWarehouses(setWarehouses) 
-    }, []);
-
-    console.log(warehouses)
-
-
-    const randomWarehouseInitialization = async () => {
-        const packages = await fetchPackages();
-        setPackagesWithoutCategory(packages)
-        if (packages) {
-            setupRandomWarehouses(packages)
-        }
     }
+  }
 
-    return (
-        <PackageContext.Provider value={{ packagesWithoutCategory, warehouses, randomWarehouseInitialization }}>
-            {children}
-        </PackageContext.Provider>
-    );
+  const [warehouses, setWarehouses] = useState<WarehousePropsWKey>(
+    // [exampleObject]
+
+  )
+
+
+  useEffect(() => {
+    fetchWarehouses(setWarehouses)
+    getWarehousesInArray()
+
+  }, []);
+
+
+  console.log(warehouses)
+  const randomWarehouseInitialization = async () => {
+    const packages = await fetchPackages();
+    setPackagesWithoutCategory(packages)
+    if (packages) {
+      setupRandomWarehouses(packages)
+    }
+  }
+  const getWarehousesInArray = () => {
+    const whArr: NoTitleWHProps[] = []
+    Object.keys(warehouses).forEach((warehouseName: string) => {
+      whArr.push(warehouses[warehouseName as string])
+    })
+
+
+  }
+  return (
+    <PackageContext.Provider value={{ packagesWithoutCategory, warehouses, randomWarehouseInitialization }}>
+      {children}
+    </PackageContext.Provider>
+  );
 };
 
 export default PackageProvider;

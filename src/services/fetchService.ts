@@ -1,14 +1,28 @@
-import { IPackage, WarehouseProps,  } from "../types";
+import { IPackage, NoTitleWHProps } from "../types";
 
 export const fetchPackages = () => {
     return fetch('https://fakestoreapi.com/products')
         .then(res => res.json())
 }
 
-export const fetchWarehouses = async (setter: React.Dispatch<React.SetStateAction<WarehouseProps>> ) => {
+export const fetchWarehouses = async (setter: React.Dispatch<React.SetStateAction<NoTitleWHProps>>) => {
     fetch(`${import.meta.env.VITE_DATABASEURL}/warehouses.json`)
         .then(resp => resp.json())
         .then(data => {
+            console.log(data);
+            const whArray: any[] = []
+            Object.keys(data).forEach(key => {
+                const whPackagesArray: IPackage[] = []
+                console.log(data[key], key)
+                Object.keys(data[key].packages).forEach(pack => {
+                    whPackagesArray.push(data[key].packages[pack])
+                })
+                console.log("packages imn array?", whPackagesArray)
+                data[key].packages = whPackagesArray
+                data[key].name = key
+                whArray.push(data[key])
+            })
+            console.log(whArray)
             setter(data)
         })
 }
