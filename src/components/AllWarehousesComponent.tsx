@@ -2,38 +2,33 @@ import { useContext } from "react"
 import WarehouseComponent from "./WarehouseComponent"
 import { PackageContext } from "../context/packageContext.tsx"
 import { addMandatoryWarehouseData } from "../services/fetchService.ts"
-import { WarehouseProps } from "../types.ts"
 
 const AllWarehousesComponent: React.FC = () => {
 
-  const context = useContext(PackageContext)
-  const warehousesArray: WarehouseProps[] = [];
+  const {setRefetch} = useContext(PackageContext)
+  const {warehouses, randomWarehouseInitialization} = useContext(PackageContext)
 
-  context && context.warehouses && Object.entries(context!.warehouses).forEach(([key, value]) => {
-    const warehouse = {
-      [key]: value,
-    };
-    warehousesArray.push(warehouse);
-
-  });
-  console.log(warehousesArray)
-
+  const addWhData = async () => {
+    const init = await addMandatoryWarehouseData();
+    if (init) {
+      setRefetch(refetch => !refetch);
+    }
+  };
+  
 
   return (
     <>AllWarehousesComponent
-      {warehousesArray &&
-        warehousesArray.map((warehouse, index) => {
-          console.log(warehouse)
-          const key = Object.keys(warehouse)[0]
+      {warehouses &&
+        warehouses.map((warehouse) => {
           return (
-            <WarehouseComponent key={index} name={warehouse[key].name} maxCapacity={warehouse[key].maxCapacity} currentCapacity={warehouse[key].currentCapacity} state={warehouse[key].state} packages={warehouse[key].packages} ></WarehouseComponent>
+            <WarehouseComponent key={warehouse.name} name={warehouse.name} maxCapacity={warehouse.maxCapacity} currentCapacity={warehouse.currentCapacity} state={warehouse.state} packages={warehouse.packages} ></WarehouseComponent>
           )
         })
       }
 
 
-      <button onClick={() => context?.randomWarehouseInitialization()}>Load Warehouse Up for initialization</button>
-      <button onClick={() => addMandatoryWarehouseData()}>Add mandatory warehouse data to the warehouses</button>
+      <button onClick={() => randomWarehouseInitialization()}>Load Warehouse Up for initialization</button>
+      <button onClick={() => addWhData()}>Add mandatory warehouse data to the warehouses</button>
     </>
   )
 }

@@ -1,29 +1,26 @@
 import { IPackage, NoTitleWHProps } from "../types";
 
+
 export const fetchPackages = () => {
     return fetch('https://fakestoreapi.com/products')
         .then(res => res.json())
 }
 
-export const fetchWarehouses = async (setter: React.Dispatch<React.SetStateAction<NoTitleWHProps>>) => {
+export const fetchWarehouses = async (setter: React.Dispatch<React.SetStateAction<NoTitleWHProps[]>>) => {
     fetch(`${import.meta.env.VITE_DATABASEURL}/warehouses.json`)
         .then(resp => resp.json())
         .then(data => {
-            console.log(data);
-            const whArray: any[] = []
+            const whArray: NoTitleWHProps[] = []
             Object.keys(data).forEach(key => {
                 const whPackagesArray: IPackage[] = []
-                console.log(data[key], key)
                 Object.keys(data[key].packages).forEach(pack => {
                     whPackagesArray.push(data[key].packages[pack])
                 })
-                console.log("packages imn array?", whPackagesArray)
                 data[key].packages = whPackagesArray
                 data[key].name = key
                 whArray.push(data[key])
             })
-            console.log(whArray)
-            setter(data)
+            setter(whArray)
         })
 }
 
@@ -36,18 +33,6 @@ export const setupRandomWarehouses = (objectsArray: IPackage[]) => {
 
     const targetArrays = [toWarehouse1, toWarehouse2, toWarehouse3, toWarehouse4];
 
-    // equally distribute objects to target arrays
-    // for (let i = objectsArray.length - 1; i >= 0; i--) {
-    //     const randomIndex = Math.floor(Math.random() * (i + 1));
-    //     const object = objectsArray[randomIndex];
-
-    //     targetArrays[i % 4].push(object);
-
-    //     objectsArray[randomIndex] = objectsArray[i];
-    //     objectsArray[i] = object;
-    // }
-
-    //randomly distribute objects to the target arrays
     while (objectsArray.length > 0) {
         const randomIndex = Math.floor(Math.random() * objectsArray.length);
         const object = objectsArray[randomIndex];
@@ -89,45 +74,63 @@ export const postPackagesToWarehouses = (toWarehouse1: IPackage[], toWarehouse2:
 
 }
 
-export const addMandatoryWarehouseData = () => {
-
+export const addMandatoryWarehouseData = (): Promise<boolean> => {
     const warehouseData = {
-        name: '',
-        maxCapacity: 15,
-        currentCapacity: 0,
-        state: 'empty'
-    }
-    fetch(`${import.meta.env.VITE_DATABASEURL}/warehouses.json`)
+      name: '',
+      maxCapacity: 15,
+      currentCapacity: 0,
+      state: 'empty'
+    };
+  
+    return new Promise((resolve, reject) => {
+      fetch(`${import.meta.env.VITE_DATABASEURL}/warehouses.json`)
         .then(resp => resp.json())
         .then(data => {
-            Object.keys(data).forEach((warehouse: string) => {
-                const arrayOfObjects = Object.keys(data[warehouse].packages).map(key => data[warehouse].packages[key]);
-                warehouseData.name = warehouse
-                warehouseData.currentCapacity = arrayOfObjects.length
-                if (warehouseData.currentCapacity === 0) {
-                    warehouseData.state = 'empty'
-                } else if (warehouseData.currentCapacity === warehouseData.maxCapacity) {
-                    warehouseData.state = 'full'
-                } else if (warehouseData.currentCapacity < warehouseData.maxCapacity && warehouseData.currentCapacity > 0) {
-                    warehouseData.state = 'open'
-                }
-                fetch(`${import.meta.env.VITE_DATABASEURL}/warehouses/${warehouse}.json`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(warehouseData)
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to upload objects.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
+          const promises = Object.keys(data).map((warehouse: string) => {
+            const arrayOfObjects = Object.keys(data[warehouse].packages).map(
+              key => data[warehouse].packages[key]
+            );
+            warehouseData.name = warehouse;
+            warehouseData.currentCapacity = arrayOfObjects.length;
+  
+            if (warehouseData.currentCapacity === 0) {
+              warehouseData.state = 'empty';
+            } else if (warehouseData.currentCapacity === warehouseData.maxCapacity) {
+              warehouseData.state = 'full';
+            } else if (
+              warehouseData.currentCapacity < warehouseData.maxCapacity &&
+              warehouseData.currentCapacity > 0
+            ) {
+              warehouseData.state = 'open';
+            }
+  
+            return fetch(`${import.meta.env.VITE_DATABASEURL}/warehouses/${warehouse}.json`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(warehouseData)
             })
-
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error('Failed to upload objects.');
+                } else {
+                  return true;
+                }
+              })
+              .catch(error => {
+                console.error('Error:', error);
+                reject(false); // Reject the promise if an error occurs
+              });
+          });
+  
+          Promise.all(promises)
+            .then(() => resolve(true)) // Resolve the promise if all operations are successful
+            .catch(() => reject(false)); // Reject the promise if any operation fails
         })
-
-}
+        .catch(error => {
+          console.error('Error:', error);
+          reject(false); // Reject the promise if an error occurs
+        });
+    });
+  };

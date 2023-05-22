@@ -10,15 +10,7 @@ export interface IPackage {
         rate: number
     }
 }
-export type WarehousePropsWKey = {
-    [warehouseName: string]: {
-        name: string,
-        maxCapacity: number,
-        currentCapacity: number,
-        state: 'open' | 'closed' | 'full' | 'empty',
-        packages: IPackage[]
-    }
-}
+
 
 export type NoTitleWHProps = {
     name: string,
@@ -31,8 +23,9 @@ export type NoTitleWHProps = {
 export type PackageContextType = {
     packagesWithoutCategory: IPackage[],
     // packagesByCategory: packageCatType 
-    warehouses: WarehousePropsWKey,
-    randomWarehouseInitialization: () => Promise<void>
+    warehouses: NoTitleWHProps[],
+    randomWarehouseInitialization: () => Promise<void>,
+    setRefetch: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 //class whlist, constructorba wh listaja, nekik megvan az állapota, 

@@ -1,7 +1,7 @@
-import { IPackage, NoTitleWHProps, WarehouseProps } from "../types";
+import { IPackage, NoTitleWHProps,  } from "../types";
 
 
-export const closeWarehouse = (whInfo: NoTitleWHProps, warehouses: WarehouseProps) => {
+export const closeWarehouse = (whInfo: NoTitleWHProps, warehouses: NoTitleWHProps[]) => {
     const warehousesCopy: WarehouseProps = warehouses
     const replacementArray: NoTitleWHProps[] = []
     Object.keys(warehouses).forEach((key) => {
