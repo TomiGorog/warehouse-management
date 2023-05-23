@@ -26,6 +26,7 @@ export type PackageContextType = {
     warehouses: NoTitleWHProps[],
     randomWarehouseInitialization: () => Promise<void>,
     setRefetch: React.Dispatch<React.SetStateAction<boolean>>,
+    setWarehouses: React.Dispatch<React.SetStateAction<NoTitleWHProps[]>>
 }
 
 //class whlist, constructorba wh listaja, nekik megvan az állapota, 

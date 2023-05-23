@@ -3,15 +3,28 @@ import { closeWarehouse } from "../services/whManagementService"
 import { NoTitleWHProps } from "../types"
 import { PackageContext } from "../context/packageContext"
 import { closeThisWarehouse } from "../services/closeService"
+import { updateWarehouses } from "../services/fetchService"
 
 
-const WarehouseComponent: React.FC<NoTitleWHProps> = ( {name, maxCapacity, currentCapacity, state, packages}: NoTitleWHProps) => {
+const WarehouseComponent: React.FC<NoTitleWHProps> = ({ name, maxCapacity, currentCapacity, state, packages }: NoTitleWHProps) => {
 
-  const {warehouses,setRefetch} = useContext(PackageContext)
+  const { warehouses, setWarehouses, setRefetch } = useContext(PackageContext)
 
-  const closeWh = async () => {
-    const whClosed = await closeThisWarehouse(whInfo, warehouses)
+  const whInfo: NoTitleWHProps = {
+    currentCapacity,
+    maxCapacity,
+    name,
+    packages,
+    state
+  }
 
+  const closeWh = () => {
+    const whClosed =  closeThisWarehouse(whInfo, warehouses)
+    if (whClosed) {
+      updateWarehouses(whClosed)
+      setRefetch(refetch => !refetch);
+    }
+    console.log(warehouses)
   }
   return (
     <div>
@@ -20,14 +33,8 @@ const WarehouseComponent: React.FC<NoTitleWHProps> = ( {name, maxCapacity, curre
       <p>Currenct capacity: {currentCapacity}</p>
       <p>Warehouse state: {state}</p>
       <button onClick={() => {
-        const whInfo: NoTitleWHProps = {
-          currentCapacity,
-          maxCapacity,
-          name,
-          packages,
-          state
-        }
-        closeThisWarehouse(whInfo, warehouses)
+
+        closeWh()
       }} >Close warehouse</button>
     </div>
   )

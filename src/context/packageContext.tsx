@@ -20,6 +20,7 @@ const [refetch, setRefetch] = useState<boolean>(false)
 
   useEffect(() => {
     fetchWarehouses(setWarehouses)
+    console.log( packagesWithoutCategory)
 
   }, [refetch]);
 
@@ -28,12 +29,15 @@ const [refetch, setRefetch] = useState<boolean>(false)
     const packages: IPackage[] = await fetchPackages();
     setPackagesWithoutCategory(packages)
     if (packages) {
+      console.log("packages in functuon", packages)
       setupRandomWarehouses(packages)
+      setRefetch(refetch => !refetch)
     }
   }
+  console.log( packagesWithoutCategory)
 
   return (
-    <PackageContext.Provider value={{ packagesWithoutCategory, warehouses, randomWarehouseInitialization, setRefetch }}>
+    <PackageContext.Provider value={{ packagesWithoutCategory, warehouses, setWarehouses, randomWarehouseInitialization, setRefetch }}>
       {children}
     </PackageContext.Provider>
   );

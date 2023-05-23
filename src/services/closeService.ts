@@ -2,7 +2,7 @@ import { NoTitleWHProps } from "../types";
 
 export const closeThisWarehouse = (currentWarehouse: NoTitleWHProps, allWarehouses: NoTitleWHProps[]) => {
     console.log(currentWarehouse, allWarehouses)
-    let warehousesWOutClosing = allWarehouses.filter(warehouse => warehouse.name !== currentWarehouse.name)
+    const warehousesWOutClosing = allWarehouses.filter(warehouse => warehouse.name !== currentWarehouse.name)
     let packagesToManipulate = currentWarehouse.packages
     let packagesLeft = []
     for (let i = 0; i < warehousesWOutClosing.length; i++) {
@@ -33,4 +33,5 @@ export const closeThisWarehouse = (currentWarehouse: NoTitleWHProps, allWarehous
     }
     allWarehouses = [currentWarehouse, ...warehousesWOutClosing]
     console.log(allWarehouses)
+    return allWarehouses
 }
