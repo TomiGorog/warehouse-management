@@ -1,5 +1,5 @@
 import { IPackage, NoTitleWHProps } from "../types";
-
+import { onValue, ref } from "firebase/database";
 
 export const fetchPackages = () => {
   return fetch('https://fakestoreapi.com/products')
@@ -51,47 +51,61 @@ export const setupRandomWarehouses = (objectsArray: IPackage[]) => {
   return postPackagesToWarehouses(toWarehouse1, toWarehouse2, toWarehouse3, toWarehouse4)
 }
 
-
+//https://www.bezkoder.com/firebase-typescript-react/
 export const postPackagesToWarehouses = (toWarehouse1: IPackage[], toWarehouse2: IPackage[], toWarehouse3: IPackage[], toWarehouse4: IPackage[]) => {
   const allPackages = [toWarehouse1, toWarehouse2, toWarehouse3, toWarehouse4]
 
   console.log(allPackages)
+  let whNumber = 1
   for (const pack of allPackages) {
-    let whNumber = 0
-    let packageObj: NoTitleWHProps = {
+console.log(pack, "start of cycle")
+console.log(JSON.stringify(pack[0]))
+    fetch(`${import.meta.env.VITE_DATABASEURL}/warehouses/warehouse${whNumber}/packages.json`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(pack[0])
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to upload objects.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
 
-      name: `warehouse${whNumber}`,
-      maxCapacity: 15,
-      currentCapacity: pack.length,
-      state: pack.currentCapacity < pack.maxCapacity ? 'open' : 'closed'
+    whNumber++
+    console.log("end if cycle, start again", whNumber)
 
-    }
-    whNumber += 1
   }
-  // for (let i = 0; i < allPackages.length; i++) {
-  //     let whNumber: number = i
-  //     whNumber += 1
-  //     allPackages[i].forEach(pack => {
-  //         fetch(`${import.meta.env.VITE_DATABASEURL}/warehouses/warehouse${whNumber}/packages.json`, {
-  //             method: 'POST',
-  //             headers: {
-  //                 'Content-Type': 'application/json',
-  //             },
-  //             body: JSON.stringify(pack)
-  //         })
-  //             .then(response => {
-  //                 if (!response.ok) {
-  //                     throw new Error('Failed to upload objects.');
-  //                 }
-  //             })
-  //             .catch(error => {
-  //                 console.error('Error:', error);
-  //             });
-  //     }
-  //     )
-  // }
-
+  console.log("finished cycle, out of loop")
 }
+//   for (let i = 0; i < allPackages.length; i++) {
+//       let whNumber: number = i
+//       whNumber += 1
+//       allPackages[i].forEach(pack => {
+//           fetch(`${import.meta.env.VITE_DATABASEURL}/warehouses/warehouse${whNumber}/packages.json`, {
+//               method: 'POST',
+//               headers: {
+//                   'Content-Type': 'application/json',
+//               },
+//               body: JSON.stringify(pack)
+//           })
+//               .then(response => {
+//                   if (!response.ok) {
+//                       throw new Error('Failed to upload objects.');
+//                   }
+//               })
+//               .catch(error => {
+//                   console.error('Error:', error);
+//               });
+//       }
+//       )
+//   }
+// }
+
 
 export const updateWarehouses = (warehouses: NoTitleWHProps[]) => {
   console.log(warehouses)
